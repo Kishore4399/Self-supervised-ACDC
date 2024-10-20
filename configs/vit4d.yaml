@@ -1,0 +1,84 @@
+# architecture
+arch: vit_4D
+enc_arch: ViTEncoder
+dec_arch: CNNDecoder
+
+# wandb
+proj_name: vit4d
+run_name: ${proj_name}_${arch}_${dataset}
+disable_wandb: 0
+wandb_id:
+
+# dataset
+dataset: acdc
+pkl_list: "dataset4d.pkl"
+data_path: "/home/shqin/acdcSSL/dataset/mae4d"
+
+# output
+output_dir: outputs/${run_name}
+ckpt_dir: ${output_dir}/ckpts
+
+# data preprocessing
+resize_x: 200
+resize_y: 256
+resize_z: 12
+patch_x: 16
+patch_y: 16
+patch_z: 3
+roi_t: 20
+roi_x: 160
+roi_y: 160
+roi_z: 9
+RandFlipd_prob: 0.2
+# RandRotate90d_prob: 0.2
+num_samples: 4
+
+# trainer
+pretrain: /home/shqin/acdcSSL/outputs/mae3d_vit_base_acdc/ckpts/checkpoint_4999.pth.tar
+trainer_name: ViT4DTrainer
+batch_size: 2
+epochs: 5000
+start_epoch: 0
+warmup_epochs: 100
+val_batch_size: 2
+workers: 8
+resume:
+
+# model
+loss_fn: "bcelog"
+patchembed: 'PatchEmbed3D'
+pos_embed_type: 'sincos'
+in_chans: 1
+encoder_embed_dim: 768
+encoder_depth: 12
+encoder_num_heads: 12
+
+decoder_embed_dim: 256
+channel_sizes: [20, 64, 32, 16]
+num_classes: 5
+
+# optimizer
+type: adamw
+lr: 6.4e-3
+beta1: 0.9
+beta2: 0.95
+weight_decay: 0.05
+
+# logging
+save_freq: 10
+print_freq: 4
+save_ckpt_num: 10
+
+eval_freq: 1
+eval_metric: "acc"
+
+mixup: 0
+cutmix: 0
+label_smoothing: 0
+
+multiprocessing_distributed: false
+distributed: null
+gpu: 0
+rank: 0
+seed: null
+test: false
